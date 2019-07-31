@@ -10,6 +10,7 @@ import pygsheets
 import os
 import lxml
 import re 
+import time
 from updatesheet import update_sheet, next_available_row
 
 #this function finds the legislator's bill page starting from a stable directory page
@@ -19,25 +20,28 @@ def find_legislator(legislator, chamber):
  elif chamber == "Senate":
   driver.get("https://www.cga.ct.gov/asp/menu/slist.asp");
  driver.implicitly_wait(10)
- driver.find_element_by_xpath("//a[@href='re.compile(legislator)'").click()
+ time.sleep(2)
+ driver.find_element_by_xpath('//a[contains(@href, "name=' + legislator + '")]').click()
  print ("found " + legislator)
 
 #this is the web scraping function; it imports to google docs
 def scrape_info(legislator):
  
  find_legislator(legislator,chamber)
+ time.sleep(1)
  #Selenium hands the page source to BeautifulSoup
  soup = BeautifulSoup(driver.page_source, 'lxml')
  
  #BeautifulSoup scrapes the bill info 
  all_info = soup.find('table')
  url_links = all_info.find_all('a')
- urls = [link.get('href') for link in url_links]
- all_info = str(all_info)
+ urls = ["https://www.cga.ct.gov/asp/CGABillStatus/" + link.get('href') for link in url_links]
+ all_info = str(all_info).title()
  
  #Give the HTML table to pandas to put in a dataframe object
  df = pd.read_html(all_info)[0]
  df['Link to Bill'] = urls
+ df = df.drop(df.columns[2], axis=1)
 
  update_sheet(sheet, df)
 
