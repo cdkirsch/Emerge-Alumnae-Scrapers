@@ -15,7 +15,7 @@ def update_sheet(sheet, df):
  firstbill_loc = 'B'+str(int(firstbill)+1)
  firstbilltxt = sheet.get_value(firstbill_loc)
 
- if df.iat[0,1] == firstbilltxt:
+ if df.iat[0,0] == firstbilltxt:
   sheet.set_dataframe(df,firstbill_loc,copy_head=False)
  elif firstbilltxt == "":
   sheet.set_dataframe(df,firstbill_loc,copy_head=False)
