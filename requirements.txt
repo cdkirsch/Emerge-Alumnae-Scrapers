@@ -1,0 +1,8 @@
+pygsheets
+selenium
+pandas 
+bs4
+virtualenv
+lxml
+datetime
+html5lib
